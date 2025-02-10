@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<game.js>const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = { x: 50, y: 150, width: 20, height: 20, dy: 0 };
+let gravity = 0.5, jump = -8;
+let obstacles = [];
+let frame = 0, gameover = false;
+
+// Detectar teclas
+document.addEventListener("keydown", () => { if (!gameover) player.dy = jump; });
+
+// Generar obstáculos
+function updateObstacles() {
+    if (frame % 100 === 0) {
+        let height = Math.random() * (canvas.height / 2);
+        obstacles.push({ x: canvas.width, y: 0, width: 30, height });
+        obstacles.push({ x: canvas.width, y: height + 100, width: 30, height: canvas.height });
+    }
+    obstacles.forEach(obstacle => obstacle.x -= 3);
+    obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
+}
+
+// Dibujar todo
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    ctx.fillStyle = "green";
+    obstacles.forEach(obstacle => ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height));
+
+    if (gameover) {
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.fillText("¡Game Over!", canvas.width / 2 - 50, canvas.height / 2);
+    }
+}
+
+// Lógica del juego
+function update() {
+    if (!gameover) {
+        player.dy += gravity;
+        player.y += player.dy;
+        updateObstacles();
+
+        // Colisiones
+        if (player.y + player.height > canvas.height || player.y < 0 ||
+            obstacles.some(obstacle =>
+                player.x < obstacle.x + obstacle.width &&
+                player.x + player.width > obstacle.x &&
+                player.y < obstacle.y + obstacle.height &&
+                player.y + player.height > obstacle.y
+            )) {
+            gameover = true;
+        }
+        frame++;
+    }
+}
+
+// Bucle del juego
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop(); </game.js>
+
+           
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego en GitHub.io</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        canvas { background: #70c5ce; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <h1>Juego Simple en GitHub.io</h1>
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <script src="game.js"></script>
+</body>
+</html>
