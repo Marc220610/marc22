@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/addons/p5.sound.min.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <script>
+      let mic;
+      
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        mic = new p5.AudioIn();
+        mic.start();
+      }
+      
+      function draw() {
+        let vol = mic.getLevel();
+        let h = map(vol, 0, 1, 0, 800);
+        let temblar = random(5, 20); // Reducción del temblor para estabilidad
+        
+        background(99, 255 - h, 71); // Color de fondo dinámico
+        
+        // Cara
+        fill(249, 255 - h, 71);
+        ellipse(windowWidth / 2, windowHeight / 2, 300 + temblar, 300 + temblar);
+        
+        // Ojos (esclera)
+        fill(255);
+        ellipse(windowWidth / 2 - 60, windowHeight / 2 - 50, 50, 50);
+        ellipse(windowWidth / 2 + 60, windowHeight / 2 - 50, 50, 50);
+        
+        // Pupilas
+        fill(0);
+        ellipse(windowWidth / 2 - 60 + temblar / 2, windowHeight / 2 - 50, 20, 20);
+        ellipse(windowWidth / 2 + 60 + temblar / 2, windowHeight / 2 - 50, 20, 20);
+        
+        // Boca
+        fill(255, 0, 0);
+        arc(windowWidth / 2, windowHeight / 2 + 70, 100, 50 + h / 2, 0, PI);
+      }
+    </script>
+  </body>
+</html>
